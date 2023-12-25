@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.List;
 
-public class CastVoteForm extends JFrame {
+public class CastVoteForm extends JFrame implements Form{
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField regionField;
@@ -80,7 +80,7 @@ public class CastVoteForm extends JFrame {
         if (votedCandidate != null && electionService.registerVoter(new Voter(firstName, lastName, region, votedCandidate))) {
             showAlert("Success!", "Voter registered and vote casted successfully");
         } else {
-            showAlert("Registration Failed", "Voter not registered or no candidate selected.");
+            showAlert("Registration Failed", "Voter not registered. No candidate selected OR voter region is not same as candidate region.");
         }
     }
 
@@ -94,11 +94,7 @@ public class CastVoteForm extends JFrame {
         return null;
     }
 
-    private void showAlert(String title, String message) {
+    public void showAlert(String title, String message) { //This method is public as it is inherited from the interface Form
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 }
-
-
-
-

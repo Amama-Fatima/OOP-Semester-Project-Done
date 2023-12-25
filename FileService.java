@@ -46,7 +46,6 @@ public class FileService {
         this.filePath = filePath;
     }
 
-    // Updated method to read objects from a serialized file
     public ArrayList<User> readUsersFromFile() {
         ArrayList<User> users = new ArrayList<>();
         try (ObjectInputStream objectInput = new ObjectInputStream(new FileInputStream(filePath))) {
@@ -83,7 +82,6 @@ public class FileService {
     }
     
 
-    // Existing method to update an object in a serialized file
     public void updateUser(User oldUser, User newUser) throws IOException {
         File file = new File(filePath);
         ArrayList<User> users = new ArrayList<>();

@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class RegisterCandidatesForm extends JFrame {
+public class RegisterCandidatesForm extends JFrame implements Form{
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField regionField;
@@ -74,23 +74,28 @@ public class RegisterCandidatesForm extends JFrame {
     // Commented out the backend logic
     
     public void Register() {
-        String firstName = firstNameField.getText();
-        String lastName = lastNameField.getText();
-        String region = regionField.getText();
-        String party = partyField.getText();
-        party = partyField.getText();
-        Candidate c = new Candidate(firstName, lastName, region, party);
-        electionService.registerCandidate(c);
-
-        showAlert("Success!", "Candidate registered successfully with id: " + c.getId());
-        firstNameField.setText("");
-        lastNameField.setText("");
-        regionField.setText("");
-        partyField.setText("");
+        try {
+            String firstName = firstNameField.getText();
+            String lastName = lastNameField.getText();
+            String region = regionField.getText();
+            String party = partyField.getText();
+            party = partyField.getText();
+            Candidate c = new Candidate(firstName, lastName, region, party);
+            electionService.registerCandidate(c);
+    
+            showAlert("Success!", "Candidate registered successfully with id: " + c.getId());
+            firstNameField.setText("");
+            lastNameField.setText("");
+            regionField.setText("");
+            partyField.setText("");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "An error occurred while registering the candidate.");
+        }
     }
     
-
-    private void showAlert(String title, String message) {
+    
+    public void showAlert(String title, String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -7,9 +7,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
-// import com.electiondatabase.ElectionService;
-// import com.electiondatabase.FileService;
-
 public class MainMenu extends JFrame {
     private ElectionService electionService;
 
@@ -56,7 +53,6 @@ public class MainMenu extends JFrame {
         // Add the button panel to the main panel
         gridPane.add(buttonPanel);
     
-        // Comment out the event handling and keep the stubs
         registerCandidatesButton.addActionListener(e -> {  openRegisterCandidatesForm(); });
         castVotersButton.addActionListener(e -> {  openCastVoteForm();  });
         viewResultsButton.addActionListener(e -> {  openResultsForm();  });

@@ -6,7 +6,6 @@ public class User implements Serializable{
     protected String firstName, lastName, region;
 
     public User(String firstName, String lastName, String region) {
-        // No need to insert here; MongoDB will do it when the document is inserted
         count++;
         this.id = count;
         this.firstName = firstName;

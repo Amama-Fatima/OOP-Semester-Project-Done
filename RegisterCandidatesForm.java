@@ -61,7 +61,6 @@ public class RegisterCandidatesForm extends JFrame implements Form{
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Comment out the backend logic for now
                 Register();
                 
             }
@@ -71,8 +70,6 @@ public class RegisterCandidatesForm extends JFrame implements Form{
         add(panel);
     }
 
-    // Commented out the backend logic
-    
     public void Register() {
         try {
             String firstName = firstNameField.getText();

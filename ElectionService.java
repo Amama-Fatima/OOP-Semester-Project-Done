@@ -3,18 +3,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ElectionService {
-    private FileService votersCollectionFileService, candidatesColletionFileService;
+    private FileService votersCollectionFileService, candidatesCollectionFileService;
 
     public ElectionService(FileService votersCollectionFileService, FileService candidatesColletionFileService) {
         this.votersCollectionFileService = votersCollectionFileService;
-        this.candidatesColletionFileService = candidatesColletionFileService;
+        this.candidatesCollectionFileService = candidatesColletionFileService;
     }
 
     public void registerCandidate(Candidate candidate) {
-        String candidateData = candidate.getFirstName() + "," + candidate.getLastName() + "," + candidate.getRegion()
-                + "," + candidate.getParty() + ",0";
         try {
-            candidatesColletionFileService.writeToFile(candidateData);
+            candidatesCollectionFileService.writeObjectToFile(candidate);
             System.out.println("Your Candidate was registered successfully.");
         } catch (IOException e) {
             e.printStackTrace();
@@ -26,10 +24,8 @@ public class ElectionService {
         if (candidate != null && matchRegion(voter, candidate)) {
             incrementCandidateVotes(voter.getVotedCandidate());
     
-            String voterData = voter.getFirstName() + "," + voter.getLastName() + "," + voter.getRegion() + ","
-                    + voter.getVotedCandidate();
             try {
-                votersCollectionFileService.writeToFile(voterData);
+                votersCollectionFileService.writeObjectToFile(voter);
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -41,84 +37,109 @@ public class ElectionService {
         }
     }
     
+    
 
-    public List<String> getAllCandidateNames() {
-        List<String> candidateNames = new ArrayList<>();
-        try {
-            List<String> lines = candidatesColletionFileService.readFromFile();
-            for (String line : lines) {
-                String[] details = line.split(",");
-                String name = details[0] + " " + details[1];
-                candidateNames.add(name);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return candidateNames;
-    }
-
-    private void incrementCandidateVotes(String candidateName) {
-        try {
-            List<String> lines = candidatesColletionFileService.readFromFile();
-
-            for (String line : lines) {
-                String[] details = line.split(",");
-                String currentName = details[0] + " " + details[1];
-                if (currentName.equals(candidateName)) {
-                    int votes = Integer.parseInt(details[4]);
-                    votes++;
-                    String newLine = details[0] + "," + details[1] + "," + details[2] + "," + details[3] + "," + votes;
-                    candidatesColletionFileService.updateLine(line, newLine);
-                    break;
+    public ArrayList<String> getAllCandidateNames() {
+        ArrayList<String> candidateNames = new ArrayList<>();
+            try {
+                ArrayList<User> candidates = candidatesCollectionFileService.readUsersFromFile();
+                
+                for (User user : candidates) {
+                    if (user instanceof Candidate) {
+                        Candidate candidate = (Candidate) user;
+                        String name = candidate.getFirstName() + " " + candidate.getLastName();
+                        candidateNames.add(name);
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            return candidateNames;
         }
-    }
 
-    public List<String> calculateElectionWinner() {
-        int highestVotes = 0;
-        List<String> winners = new ArrayList<>();
-        try {
-            List<String> lines = candidatesColletionFileService.readFromFile();
-            // First loop: Find the highest number of votes
-            for (String line : lines) {
-                String[] details = line.split(",");
-                int votes = Integer.parseInt(details[4]);
-                if (votes > highestVotes) {
-                    highestVotes = votes;
+        private void incrementCandidateVotes(String candidateName) {
+            try {
+                ArrayList<User> candidates = candidatesCollectionFileService.readUsersFromFile();
+        
+                for (User user : candidates) {
+                    if (user instanceof Candidate) {
+                        Candidate candidate = (Candidate) user;
+                        String currentName = candidate.getFirstName() + " " + candidate.getLastName();
+        
+                        if (currentName.equals(candidateName)) {
+                            int votes = candidate.getVotes();
+                            votes++;
+                            candidate.setVotes(votes);
+        
+                            // Update the user in the file
+                            candidatesCollectionFileService.updateUser(candidate, candidate);
+                            break;
+                        }
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            // Second loop: Find all candidates with the highest number of votes
-            for (String line : lines) {
-                String[] details = line.split(",");
-                int votes = Integer.parseInt(details[4]);
-                if (votes == highestVotes) {
-                    String name = details[0] + " " + details[1];
-                    winners.add(name);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return winners;
-    }
+        
+
+        public ArrayList<String> calculateElectionWinner() {
+            int highestVotes = 0;
+            ArrayList<String> winners = new ArrayList<>();
+            try {
+                List<User> candidates = candidatesCollectionFileService.readUsersFromFile();
+                
+                // First loop: Find the highest number of votes
+                for (User user : candidates) {
+                    if (user instanceof Candidate) {
+                        Candidate candidate = (Candidate) user;
+                        int votes = candidate.getVotes();
+                        if (votes > highestVotes) {
+                            highestVotes = votes;
+                        }
+                    }
+                }
+                
+                // Second loop: Find all candidates with the highest number of votes
+                for (User user : candidates) {
+                    if (user instanceof Candidate) {
+                        Candidate candidate = (Candidate) user;
+                        int votes = candidate.getVotes();
+                        if (votes == highestVotes) {
+                            String name = candidate.getFirstName() + " " + candidate.getLastName();
+                            winners.add(name);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return winners;
+        }
+        
 
         public Candidate getCandidateByName(String candidateName) {
-        try {
-            List<String> lines = candidatesColletionFileService.readFromFile();
-            for (String line : lines) {
-                String[] details = line.split(",");
-                if ((details[0] + " " + details[1]).equals(candidateName)) {
-                    return new Candidate(details[0], details[1], details[2], details[3]);
+            try {
+                ArrayList<User> candidates = candidatesCollectionFileService.readUsersFromFile();
+        
+                for (User user : candidates) {
+                    if (user instanceof Candidate) {
+                        Candidate candidate = (Candidate) user;
+                        String currentName = candidate.getFirstName() + " " + candidate.getLastName();
+        
+                        if (currentName.equals(candidateName)) {
+                            return candidate;
+                        }
+                    } else {
+                        System.out.println("User is not a candidate");
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
-    }
+        
 
     public boolean matchRegion(User user1, User user2) {
         return user1.getRegion().equals(user2.getRegion());

@@ -24,4 +24,8 @@ public class Candidate extends User {
         this.party = party;
     }
 
+    public String toString() {
+        return "Candidate: First Name: " + firstName + ", Last Name: " + lastName + ", Region: " + region + ", Party: " + party + ", Votes: " + votes; 
+    }
+
 }

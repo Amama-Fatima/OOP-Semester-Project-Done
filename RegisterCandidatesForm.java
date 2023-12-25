@@ -63,13 +63,12 @@ public class RegisterCandidatesForm extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Comment out the backend logic for now
                 Register();
-                showAlert("Success!", "Candidate registered successfully");
+                
             }
         });
         panel.add(row5Panel);
 
         add(panel);
-        setVisible(true);
     }
 
     // Commented out the backend logic
@@ -80,9 +79,10 @@ public class RegisterCandidatesForm extends JFrame {
         String region = regionField.getText();
         String party = partyField.getText();
         party = partyField.getText();
-        electionService.registerCandidate(new Candidate(firstName, lastName, region, party));
+        Candidate c = new Candidate(firstName, lastName, region, party);
+        electionService.registerCandidate(c);
 
-        showAlert("Success!", "Candidate registered successfully");
+        showAlert("Success!", "Candidate registered successfully with id: " + c.getId());
         firstNameField.setText("");
         lastNameField.setText("");
         regionField.setText("");

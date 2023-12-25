@@ -13,4 +13,8 @@ public class Voter extends User {
     public void setVotedCandidate(String votedCandidate) {
         this.votedCandidate = votedCandidate;
     }
+
+    public String toString() {
+        return "Voter: First Name: " + firstName + ", Last Name: " + lastName + ", Region: " + region + ", Voted Candidate: " + votedCandidate; 
+    }
 }

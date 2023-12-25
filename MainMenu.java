@@ -82,8 +82,8 @@ public class MainMenu extends JFrame {
     }
 
     private void initServices() {
-        String votersFilePath =  "votersCollection.csv";
-        String candidatesFilePath =  "candidatesCollection.csv";
+        String votersFilePath =  "votersCollection.ser";
+        String candidatesFilePath =  "candidatesCollection.ser";
 
         FileService votersCollectionFileService = new FileService(votersFilePath);
         FileService candidatesColletionFileService = new FileService(candidatesFilePath);
